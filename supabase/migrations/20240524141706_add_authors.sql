@@ -7,3 +7,19 @@ CREATE TABLE authors (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 COMMENT ON TABLE authors IS 'Authors table';
+
+ALTER TABLE authors ENABLE ROW LEVEL SECURITY;
+
+create policy "select_authors_policy"
+
+on "public"."authors"
+
+as PERMISSIVE
+
+for SELECT
+
+to authenticated
+
+using (
+ true
+ );

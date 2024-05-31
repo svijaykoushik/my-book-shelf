@@ -9,3 +9,37 @@ CREATE TABLE user_books (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 COMMENT ON TABLE user_books IS 'UserBooks table to link users with their books';
+
+create trigger
+  handle_updated_at before update
+on user_books
+for each row execute
+  procedure moddatetime(updated_at);
+
+ALTER TABLE user_books ENABLE ROW LEVEL SECURITY;
+
+create policy "select_user_books_policy"
+
+on "public"."user_books"
+
+as PERMISSIVE
+
+for SELECT
+
+to public
+
+using (
+ (select auth.uid()) = user_id
+ );
+
+create policy "insert_user_books_policy"
+on "public"."user_books"
+for insert with check (
+  (select auth.uid()) = user_id
+);
+
+create policy "delete_user_books_policy"
+on "public"."user_books"
+for delete using (
+  (select auth.uid()) = user_id
+);

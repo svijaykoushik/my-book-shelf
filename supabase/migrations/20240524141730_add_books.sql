@@ -7,3 +7,19 @@ CREATE TABLE books (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 COMMENT ON TABLE books IS 'Books table';
+
+ALTER TABLE books ENABLE ROW LEVEL SECURITY;
+
+create policy "select_books_policy"
+
+on "public"."books"
+
+as PERMISSIVE
+
+for SELECT
+
+to authenticated
+
+using (
+ true
+ );
